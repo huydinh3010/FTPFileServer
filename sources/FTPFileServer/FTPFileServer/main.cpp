@@ -2,9 +2,13 @@
 #include <WinSock2.h>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <regex>
+#include <string>
 
 #define NAME_LENGTH 50
 #define PATH_LENGTH_MAX 100
+#define IP_SERVER "127.0.0.1"
 
 using namespace std;
 
@@ -81,7 +85,11 @@ DWORD WINAPI clientThread(LPVOID p) {
 	// gửi message
 	char message[] = "Chao may.\n";
 	send(c, message, strlen(message), 0);
-	
+	bool trans_mode = 0; // 0: chưa set, 1: active mode, 2: passive mode
+	SOCKET sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKADDR_IN addr_data;
+	addr_data.sin_family = AF_INET;
+
 	// login
 	bool login = false;
 
@@ -155,6 +163,101 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 		}
+		else if (strncmp(rbuf, "PASV", 4) == 0) {
+			if (!login) {
+				// yêu cầu login 
+				char sbuf[] = "530 Please login with USER and PASS!\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else {
+				closesocket(sdata);
+				sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);	
+				while (true) {
+					// lưu cấu trúc địa chỉ
+					addr_data.sin_addr.s_addr = 0;
+					addr_data.sin_port = htons(rand() % (65535 - 1024 + 1) + 1024);	// sinh port ngẫu nhiên trong khoảng từ 1024 -> 65535
+					if (!bind(sdata, (sockaddr*)&addr_data, sizeof(addr_data))) break;	// nếu bind thành công thì thoát, tránh trường hợp port đã được sử dụng bởi tiến trình khác
+				}
+				trans_mode = 2;
+				// tạo câu lệnh passive
+				char sbuf[] = "227 Entering Passive Mode (";
+				char ip[] = IP_SERVER;
+				replace(ip, ip + strlen(ip) + 1, '.', ','); // chuyển dấu . thành ,
+				strcat(sbuf, ip);
+				strcat(sbuf, ",");
+				int p1 = ntohs(addr_data.sin_port) / 256;
+				int p2 = ntohs(addr_data.sin_port) % 256;
+				char port[10] = "";
+				sprintf(port, "%d,%d", p1, p2);
+				strcat(sbuf, port);
+				strcat(sbuf, ")\n");
+				send(c, sbuf, strlen(sbuf), 0); // gửi câu lệnh
+			}
+		}
+		else if (strncmp(rbuf, "PORT", 4) == 0) { // lệnh PORT (ip,port) "PORT 122,11,12,5,45,6\n"
+			if (!login) {
+				// yêu cầu login 
+				char sbuf[] = "530 Please login with USER and PASS!\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else {
+				char * first_sp = strchr(rbuf, ' ');
+				if (first_sp == NULL || (first_sp - rbuf) != 4) {
+					char sbuf[] = "501 Syntax error!\n";
+					send(c, sbuf, strlen(sbuf), 0);
+				}
+				else {
+					char addr[30];
+					sscanf(first_sp, "%s", addr);
+					bool valid = true;
+					char * index[5];
+					// kiểm tra xem có đủ 5 dấu ',' không
+					index[0] = strchr(addr, ',');
+					for (int i = 1; i < 5; i++) {
+						index[i] = strchr(index[i - 1] + 1, ',');
+						if (index[i] == NULL) {
+							valid = false;
+							break;
+						}
+						//*(index[i]) = '\0';
+					}
+					if (!valid) { // lỗi cú pháp
+						char sbuf[] = "501 Syntax error!\n";
+						send(c, sbuf, strlen(sbuf), 0);
+					}
+					else {
+						u_char ip1 = 0, ip2 = 0, ip3 = 0, ip4 = 0, p1 = 0, p2 = 0;
+						// đọc giá trị từ xâu
+						sscanf(addr, "%d", &ip1);
+						sscanf(index[0] + 1, "%d", &ip2);
+						sscanf(index[1] + 1, "%d", &ip3);
+						sscanf(index[2] + 1, "%d", &ip4);
+						sscanf(index[3] + 1, "%d", &p1);
+						sscanf(index[4] + 1, "%d", &p2);
+						// kiểm tra giá trị ip có hợp lệ không
+						if (ip1 < 0 || ip1 > 255 || ip2 < 0 || ip2 > 255 || ip3 < 0 || ip3 > 255 || ip4 < 0 || ip4 > 255 || p1 < 0 || p1 > 255 || p2 < 0 || p2 > 255) {
+							valid = false;
+							char sbuf[] = "501 Syntax error!\n";
+							send(c, sbuf, strlen(sbuf), 0);
+						}
+						else {
+							// lưu vào cấu trúc địa chỉ
+							trans_mode = 1;
+							addr_data.sin_addr.S_un.S_un_b.s_b1 = ip1;
+							addr_data.sin_addr.S_un.S_un_b.s_b2 = ip2;
+							addr_data.sin_addr.S_un.S_un_b.s_b3 = ip3;
+							addr_data.sin_addr.S_un.S_un_b.s_b4 = ip4;
+							addr_data.sin_port = htons(p1 * 256 + p2);
+							/*cout << ip1 << "." << ip2 << "." << ip3 << "." << ip4 << "." << p1 << "." << p2 << endl;*/
+							/*cout << addr_data.sin_addr.s_addr << endl;*/
+							char sbuf[] = "200 Port command successful!\n";
+							send(c, sbuf, strlen(sbuf), 0);
+						}
+					}
+				}
+			}
+		}
+
 
 		else {	// lenh khong duoc xu ly -> loi cu phap
 			char sbuf[] = "500 Systax error, command unrecognized.\n";
