@@ -1,6 +1,6 @@
 ﻿  main.cpp
-d:\work - git\ftpfileserver\sources\client\client\main.cpp(13): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+d:\git\ftpfileserver\sources\client\client\main.cpp(14): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\um\winsock2.h(1831): note: see declaration of 'inet_addr'
-d:\work - git\ftpfileserver\sources\client\client\main.cpp(24): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\client\client\main.cpp(25): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-  Client.vcxproj -> D:\Work - Git\FTPFileServer\sources\Client\Debug\Client.exe
+  Client.vcxproj -> D:\Git\FTPFileServer\sources\Client\Debug\Client.exe

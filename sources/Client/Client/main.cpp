@@ -10,6 +10,7 @@ int main() {
 	SOCKADDR_IN saddr;
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(21);
+	//saddr.sin_addr.s_addr = inet_addr("202.191.56.69");
 	saddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	code = connect(c, (sockaddr*)&saddr, sizeof(saddr));

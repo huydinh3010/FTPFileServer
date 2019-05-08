@@ -1,5 +1,2 @@
-anonymous null 1
-D:\FTP Server Demo	/	7 7
-huydinh 30101998 2
-D:\FTP Server Demo	/	7 7
-D:\FSCapture76	/	7 7
+anonymous null D:/FTP Server Demo	7 7
+huydinh 30101998 D:/FTP Server Demo	7 7
