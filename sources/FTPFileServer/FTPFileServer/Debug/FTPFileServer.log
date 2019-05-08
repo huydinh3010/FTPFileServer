@@ -46,7 +46,7 @@ d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(310): warning 
   d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(310): note: consider using '%hhd' in the format string
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(311): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
   d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(311): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(407): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(414): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(190): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(192): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.

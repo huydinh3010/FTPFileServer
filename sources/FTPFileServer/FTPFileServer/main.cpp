@@ -315,13 +315,13 @@ DWORD WINAPI clientThread(LPVOID p) {
 							char sbuf[] = "501 Syntax error!\n";
 							send(c, sbuf, strlen(sbuf), 0);
 						}
-						else if (ip1 != caddr.sin_addr.S_un.S_un_b.s_b1 || ip2 != caddr.sin_addr.S_un.S_un_b.s_b2 || ip3 != caddr.sin_addr.S_un.S_un_b.s_b3 || ip4 != caddr.sin_addr.S_un.S_un_b.s_b4) {
-							// ip từ lệnh port không khớp với ip của client
-							// có thể không cần kiểm tra thông tin này
-							// gửi mã 421 không đáp ứng dịch vụ do ip không khớp
-							char sbuf[] = "421 Rejected command, requested IP address does not match control connection IP.\n";
-							send(c, sbuf, strlen(sbuf), 0);
-						}
+						//else if (ip1 != caddr.sin_addr.S_un.S_un_b.s_b1 || ip2 != caddr.sin_addr.S_un.S_un_b.s_b2 || ip3 != caddr.sin_addr.S_un.S_un_b.s_b3 || ip4 != caddr.sin_addr.S_un.S_un_b.s_b4) {
+						//	// ip từ lệnh port không khớp với ip của client
+						//	// có thể không cần kiểm tra thông tin này
+						//	// gửi mã 421 không đáp ứng dịch vụ do ip không khớp
+						//	char sbuf[] = "421 Rejected command, requested IP address does not match control connection IP.\n";
+						//	send(c, sbuf, strlen(sbuf), 0);
+						//}
 						else {
 							// lưu vào cấu trúc địa chỉ
 							trans_mode = 1;
@@ -385,7 +385,14 @@ DWORD WINAPI clientThread(LPVOID p) {
 					send(c, sbuf, strlen(sbuf), 0);
 					if (trans_mode == 1) {
 						// active mode
+						// đặt cổng kết nối của server là cổng 20, bằng hàm bind
 						sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+						SOCKADDR_IN sdata_addr;
+						sdata_addr.sin_family = AF_INET;
+						sdata_addr.sin_addr.s_addr = 0;
+						sdata_addr.sin_port = htons(20);
+						bind(sdata, (sockaddr*)&sdata_addr, sizeof(sdata_addr)); // có thể bind lỗi tại đây
+
 						int code = connect(sdata, (sockaddr*)&addr_data, sizeof(addr_data));
 						if (code != 0) {
 							// không kết nối được
