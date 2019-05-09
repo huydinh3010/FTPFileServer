@@ -60,6 +60,34 @@ void showUsersInfo() {
  	}
 }
 
+void strtrim(char * str) { // loại bỏ khoảng trống ở đầu và cuối chuỗi
+	while (str[strlen(str) - 1] == ' ') str[strlen(str) - 1] = '\0';
+	//char tmp[1024] = "";
+	int i = 0;
+	while (str[i] == ' ') i++;
+	strcpy(str, str + i); // có thể sai ở đây?
+}
+
+void preprocessPathname(char * path) {
+	if (strlen(path) == 0) return;
+	// loại bỏ dấu / ở cuối
+	while (path[strlen(path) - 1] == ' ' || path[strlen(path) - 1] == '/') path[strlen(path) - 1] = '\0';
+	//if (strlen(path) == 0) { // thư mục gốc
+	//	strcpy(path, "/");
+	//	return;
+	//}
+	char tmp[1024] = "";
+	int i = 1;
+	tmp[0] = path[0];
+	// loại bỏ các / gần nhau
+	for (int j = 1; j < strlen(path); j++) { 
+		if (path[j] == '/' && tmp[i - 1] == '/') continue;
+		tmp[i++] = path[j];
+	}
+	tmp[i] = '\0';
+	strcpy(path, tmp);
+}
+
 bool splitRequestCommand(const char * requestCmd, char * cmd, char * args) { // tách yêu cầu thành mã và tham số
 	char tmp[1024] = "";
 	strcpy(tmp, requestCmd);
@@ -68,6 +96,7 @@ bool splitRequestCommand(const char * requestCmd, char * cmd, char * args) { // 
 	if (firstSpace == NULL) {
 		if (strlen(tmp) > 4) return false; // mã command tối đa 4 kí tự
 		strcpy(cmd, tmp);
+		strupr(cmd);
 		strcpy(args, "");
 		return true;
 	}
@@ -77,60 +106,123 @@ bool splitRequestCommand(const char * requestCmd, char * cmd, char * args) { // 
 	else {
 		strcpy(args, firstSpace + 1);
 		*(firstSpace) = '\0';
+		strtrim(args);
 		if (strlen(tmp) > 4) return false;
 		strcpy(cmd, tmp);
+		strupr(cmd);
 		return true;
 	}
 }
 
-bool createListCmdData(const char * fullpath,User * user, char * data) { // tao data cho lenh list
-	// chưa xử lý được lệnh LIST tên file: (giống ls tên file trong linux)
-	char tmp[2 * PATH_LENGTH_MAX] = "";
-	strcpy(tmp, fullpath);
-	strcat_s(tmp, "/*.*"); // timf kiem tat ca file+thu muc trong thu muc
+int findFile(const char * fullpath) {
+	// trả về 0 nếu không tìm thấy, trả về 1 nếu là thư mục, trả về 2 nếu là file, trả về 3 nếu tìm thấy nhiều kết quả
 	WIN32_FIND_DATAA FDATA;
+
 	HANDLE hFind = INVALID_HANDLE_VALUE;
-	hFind = FindFirstFileA(tmp, &FDATA);
-	if (hFind == INVALID_HANDLE_VALUE) return false; // khong tim duoc file dau tien
-	
-	char metadata[100] = "";
-	sprintf(metadata, "\t%d\t%s\t%s\t", 1, user->username, user->username);
-	do {
-		if (FDATA.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			// la thu muc
-			char permission[11] = "d";
-			if (user->dperm & 4)  strcat_s(permission, "r");
-			else strcat_s(permission, "-");
-			if (user->dperm & 2)  strcat_s(permission, "w");
-			else strcat_s(permission, "-");
-			if (user->dperm & 1)  strcat_s(permission, "x");
-			else strcat_s(permission, "-");
-			strcat_s(permission, "r-xr-x");
-			char line[1024] = "";
-			SYSTEMTIME stLocal;
-			FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
-			sprintf(line, "%s%s%d\t%02d %02d %04d\t%s\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
-			//không điền thư mục . và ..
-			if(strcmp(FDATA.cFileName,".") != 0 && strcmp(FDATA.cFileName,"..") != 0) strcat(data, line);
-		}
-		else {
-			// khong phai thu muc, coi nhu la file
-			char permission[11] = "-";
-			if (user->fperm & 4)  strcat_s(permission, "r");
-			else strcat_s(permission, "-");
-			if (user->fperm & 2)  strcat_s(permission, "w");
-			else strcat_s(permission, "-");
-			if (user->fperm & 1)  strcat_s(permission, "x");
-			else strcat_s(permission, "-");
-			strcat_s(permission, "r--r--");
-			char line[1024] = "";
-			SYSTEMTIME stLocal;
-			FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
-			sprintf(line, "%s%s%d\t%02d %02d %04d\t%s\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
-			strcat(data, line);
-		}
-	} while (FindNextFileA(hFind, &FDATA) != 0);
-	return true;
+	hFind = FindFirstFileA(fullpath, &FDATA);
+	if (hFind == INVALID_HANDLE_VALUE) return 0; // không tìm thấy
+	if (FindNextFileA(hFind, &FDATA) == 0) {
+		if (FDATA.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) return 1; // tìm được 1 thư mục
+		else return 2; // tìm được 1 file
+	}
+	else return 3; // tìm được nhiều hơn 1 file/thư mục
+}
+
+bool createListCmdData(const char * fullpath,User * user, char * data) { // tao data cho lenh list
+	int type = findFile(fullpath);
+	if (type == 0) return false; // không tìm thấy file / thư mục
+	else if (type == 1) { // là thư mục
+		char tmp[2 * PATH_LENGTH_MAX] = "";
+		sprintf(tmp, "%s/*.*", fullpath); // timf kiem tat ca file+thu muc trong thu muc
+		WIN32_FIND_DATAA FDATA;
+		HANDLE hFind = INVALID_HANDLE_VALUE;
+		hFind = FindFirstFileA(tmp, &FDATA);
+		//if (hFind == INVALID_HANDLE_VALUE) return true; // khong tim duoc file dau tien, data rỗng, nếu là thư mục chắc chắn tìm được hai thư mục . và ..
+		char metadata[100] = "";
+		sprintf(metadata, "\t%d\t%s\t%s\t", 1, user->username, user->username);
+		do {
+			if (FDATA.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				// la thu muc khác .. và .
+				if (strcmp(FDATA.cFileName, ".") && strcmp(FDATA.cFileName, "..")) {
+					char permission[11] = "d";
+					if (user->dperm & 4)  strcat_s(permission, "r");
+					else strcat_s(permission, "-");
+					if (user->dperm & 2)  strcat_s(permission, "w");
+					else strcat_s(permission, "-");
+					if (user->dperm & 1)  strcat_s(permission, "x");
+					else strcat_s(permission, "-");
+					strcat_s(permission, "r-xr-x");
+					char line[1024] = "";
+					SYSTEMTIME stLocal;
+					FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
+					sprintf(line, "%s%s%d\t%02d %02d %04d\t%s\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+					strcat(data, line);
+				}
+			}
+			else {
+				// khong phai thu muc, coi nhu la file
+				char permission[11] = "-";
+				if (user->fperm & 4)  strcat_s(permission, "r");
+				else strcat_s(permission, "-");
+				if (user->fperm & 2)  strcat_s(permission, "w");
+				else strcat_s(permission, "-");
+				if (user->fperm & 1)  strcat_s(permission, "x");
+				else strcat_s(permission, "-");
+				strcat_s(permission, "r--r--");
+				char line[1024] = "";
+				SYSTEMTIME stLocal;
+				FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
+				sprintf(line, "%s%s%d\t%02d %02d %04d\t%s\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+				strcat(data, line);
+			}
+		} while (FindNextFileA(hFind, &FDATA) != 0);
+		return true;
+	}
+	else if (type == 2 || type == 3) { // là file hoặc nhiều file
+		WIN32_FIND_DATAA FDATA;
+		HANDLE hFind = INVALID_HANDLE_VALUE;
+		hFind = FindFirstFileA(fullpath, &FDATA);
+		//if (hFind == INVALID_HANDLE_VALUE) return false; // khong tim duoc file
+		char metadata[100] = "";
+		sprintf(metadata, "\t%d\t%s\t%s\t", 1, user->username, user->username);
+		do {
+			if (FDATA.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				// la thu muc khác .. và .
+				if (strcmp(FDATA.cFileName, ".") && strcmp(FDATA.cFileName, "..")) {
+					char permission[11] = "d";
+					if (user->dperm & 4)  strcat_s(permission, "r");
+					else strcat_s(permission, "-");
+					if (user->dperm & 2)  strcat_s(permission, "w");
+					else strcat_s(permission, "-");
+					if (user->dperm & 1)  strcat_s(permission, "x");
+					else strcat_s(permission, "-");
+					strcat_s(permission, "r-xr-x");
+					char line[1024] = "";
+					SYSTEMTIME stLocal;
+					FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
+					sprintf(line, "%s%s%d\t%02d %02d %04d\t%s\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+					strcat(data, line);
+				}
+			}
+			else {
+				// khong phai thu muc, coi nhu la file
+				char permission[11] = "-";
+				if (user->fperm & 4)  strcat_s(permission, "r");
+				else strcat_s(permission, "-");
+				if (user->fperm & 2)  strcat_s(permission, "w");
+				else strcat_s(permission, "-");
+				if (user->fperm & 1)  strcat_s(permission, "x");
+				else strcat_s(permission, "-");
+				strcat_s(permission, "r--r--");
+				char line[1024] = "";
+				SYSTEMTIME stLocal;
+				FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
+				sprintf(line, "%s%s%d\t%02d %02d %04d\t%s\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+				strcat(data, line);
+			}
+		} while (FindNextFileA(hFind, &FDATA) != 0);
+		return true;
+	}
 }
 
 DWORD WINAPI clientThread(LPVOID p) {
@@ -340,6 +432,76 @@ DWORD WINAPI clientThread(LPVOID p) {
 				}
 			}
 		}
+		else if (strcmp(cmd, "PWD") == 0) { // xử lý lệnh PWD<sp><\r\n>
+			char sbuf[1024] = "";
+			sprintf(sbuf, "257 \"%s\" is current directory.\r\n", cwd);
+			send(c, sbuf, strlen(sbuf), 0);
+		}
+		else if (strcmp(cmd, "CWD") == 0) { // xử lý lệnh CWD<sp><pathname><\r\n>
+			if (strlen(args) == 0) {
+				// tham số trống -> đường dẫn như cũ
+				char sbuf[1024] = "";
+				sprintf(sbuf, "250 missing argument to CWD. \"%s\" is current directory.\r\n", cwd);
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (strcmp(args, ".") == 0) { // thư mục hiện tại
+				char sbuf[1024] = "";
+				sprintf(sbuf, "250 \"%s\" is current directory.\r\n", cwd);
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (strcmp(args, "..") == 0) { // thư mục cha
+				if (strcmp(cwd, "/") != 0) { // quay lai thư mục cha khi không ở thư mục gốc
+					cwd[strlen(cwd) - 1] = '\0';
+					char * last = strrchr(cwd, '/');
+					if (last - cwd == 0) strcpy(cwd, "/");
+					else cwd[last - cwd + 1] = '\0';
+				}
+				char sbuf[1024] = "";
+				sprintf(sbuf, "250 \"%s\" is current directory.\r\n", cwd);
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else {
+				char path[2 * PATH_LENGTH_MAX] = "";
+				if (args[0] == '/') strcpy(path, args); // đường dẫn tuyệt đối
+				else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
+				preprocessPathname(path);
+				if (strlen(path) == 0) { // là thư mục gốc
+					strcpy(cwd, "/");
+					char sbuf[] = "250 successful. \"/\" is current directory.\r\n";
+					send(c, sbuf, strlen(sbuf), 0);
+				}
+				else {
+					// chuyển thành path vật lý
+					char fullpath[2 * PATH_LENGTH_MAX] = "";
+					sprintf(fullpath, "%s%s", user->h_path, path);
+					// tìm trong thư mục xem có chứa file này hay không
+					if (findFile(fullpath) == 1) {
+						// là thư mục, gửi lệnh ok
+						sprintf(cwd, "%s/", path);
+						/*strcpy(cwd, path);*/
+						char sbuf[1024] = "";
+						sprintf(sbuf, "250 successful. \"%s\" is current directory.\r\n", cwd);
+						send(c, sbuf, strlen(sbuf), 0);
+					}
+					else {
+						char sbuf[1024] = "";
+						sprintf(sbuf, "550 CWD failed. \"%s\": directory not found.\r\n", path);
+						send(c, sbuf, strlen(sbuf), 0);
+					}
+				}
+			}
+		}
+		else if (strcmp(cmd, "CDUP") == 0) { // chuyển về thư mục cha
+			if (strcmp(cwd, "/") != 0) { // quay lai thư mục cha khi không ở thư mục gốc
+				cwd[strlen(cwd) - 1] = '\0';
+				char * last = strrchr(cwd, '/');
+				if (last - cwd == 0) strcpy(cwd, "/");
+				else cwd[last - cwd + 1] = '\0';
+			}
+			char sbuf[1024] = "";
+			sprintf(sbuf, "200 CDUP successful. \"%s\" is current directory.\r\n", cwd);
+			send(c, sbuf, strlen(sbuf), 0);
+		}
 		else if (strcmp(cmd, "LIST") == 0) { // xử lý lệnh LIST<sp><path><\n>
 			if(!login){
 				// yêu cầu login 
@@ -359,18 +521,16 @@ DWORD WINAPI clientThread(LPVOID p) {
 				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
 				else {
 					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else { // đường dẫn tương đối
-						strcpy(path, cwd);
-						strcat(path, args);
-						strcat(path, "/");
-					}
+					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
 				}
 				// chưa xử lý kí tự đặc biệt như: cd .., cd ., cd ~ giống trong linux
 				
+				preprocessPathname(path);
+				if (strcmp(path, "/") == 0) path[0] = '\0';
 				// ghép thành đường dẫn vật lý
 				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				strcpy(fullpath, user->h_path); 
-				strcat_s(fullpath, path);
+				sprintf(fullpath, "%s%s", user->h_path, path);
+
 				//replace(fullpath, fullpath + strlen(fullpath) + 1, '/','\\'); // thay thế ký tự / thành '\'
 				//// tìm và xử lý trong bộ nhớ
 				
@@ -437,6 +597,9 @@ DWORD WINAPI clientThread(LPVOID p) {
 				
 			}
 		}
+
+
+
 		else {	// lenh khong duoc xu ly -> loi cu phap
 			char sbuf[] = "500 Systax error, command unrecognized.\n";
 			send(c, sbuf, strlen(sbuf), 0);
