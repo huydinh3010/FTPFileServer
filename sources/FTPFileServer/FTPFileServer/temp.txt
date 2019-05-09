@@ -1,0 +1,9 @@
+-rwxr--r-- 1 anonymous anonymous 357 25 04 2019 abc.txt
+drwxr-xr-x 1 anonymous anonymous 0 25 04 2019 Folder 1
+drwxr-xr-x 1 anonymous anonymous 0 25 04 2019 Folder 2
+drwxr-xr-x 1 anonymous anonymous 0 25 04 2019 Folder 3
+-rwxr--r-- 1 anonymous anonymous 980 25 04 2019 hello.lnk
+drwxr-xr-x 1 anonymous anonymous 0 08 05 2019 huydinh
+-rwxr--r-- 1 anonymous anonymous 1460 08 05 2019 microsoft_sql_server.png
+-rwxr--r-- 1 anonymous anonymous 0 09 05 2019 New Text Document.txt
+-rwxr--r-- 1 anonymous anonymous 357 25 04 2019 test.txt

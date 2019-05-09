@@ -16,119 +16,143 @@ d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(93): warning C
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(98): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(99): warning C4996: 'strupr': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strupr. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(584): note: see declaration of 'strupr'
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(100): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(107): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
 d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(111): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(158): warning C4307: '+': integral constant overflow
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(175): warning C4307: '+': integral constant overflow
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(203): warning C4307: '+': integral constant overflow
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(220): warning C4307: '+': integral constant overflow
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(136): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(112): warning C4996: 'strupr': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strupr. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(584): note: see declaration of 'strupr'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(137): warning C4307: '+': integral constant overflow
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(172): warning C4307: '+': integral constant overflow
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(189): warning C4307: '+': integral constant overflow
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(217): warning C4307: '+': integral constant overflow
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(234): warning C4307: '+': integral constant overflow
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(150): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(142): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(156): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(158): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(172): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(159): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(173): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(175): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(189): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(176): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(190): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(187): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(201): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(203): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(217): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(204): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(218): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(220): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(234): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(221): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(235): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(298): warning C4018: '<': signed/unsigned mismatch
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(312): warning C4018: '<': signed/unsigned mismatch
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(351): warning C4305: '=': truncation from 'int' to 'bool'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(398): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
-  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(398): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(399): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
-  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(399): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(400): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
-  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(400): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(401): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
-  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(401): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(402): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
-  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(402): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(403): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
-  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(403): note: consider using '%hhd' in the format string
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(574): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(282): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(247): warning C4018: '<': signed/unsigned mismatch
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(250): warning C4018: '<': signed/unsigned mismatch
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(249): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(1323): note: see declaration of 'itoa'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(251): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(253): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(331): warning C4018: '<': signed/unsigned mismatch
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(345): warning C4018: '<': signed/unsigned mismatch
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(381): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(435): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
+  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(435): note: consider using '%hhd' in the format string
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(436): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
+  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(436): note: consider using '%hhd' in the format string
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(437): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
+  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(437): note: consider using '%hhd' in the format string
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(438): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
+  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(438): note: consider using '%hhd' in the format string
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(439): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
+  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(439): note: consider using '%hhd' in the format string
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(440): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'u_char *'
+  d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(440): note: consider using '%hhd' in the format string
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(315): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(284): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(317): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(285): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(318): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(310): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(343): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(356): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(393): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(357): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(394): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(361): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(398): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(362): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(399): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(363): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(400): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(398): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(435): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2263): note: see declaration of 'sscanf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(399): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(436): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2263): note: see declaration of 'sscanf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(400): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(437): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2263): note: see declaration of 'sscanf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(401): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(438): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2263): note: see declaration of 'sscanf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(402): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(439): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2263): note: see declaration of 'sscanf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(403): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(440): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2263): note: see declaration of 'sscanf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(437): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(474): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(444): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(481): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(449): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(486): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(456): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(493): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(460): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(497): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(465): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(502): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(466): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(503): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(469): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(506): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(476): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(513): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(480): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(517): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(483): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(520): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(488): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(525): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(498): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(535): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(502): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(539): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(521): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(557): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(523): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(561): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(524): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(563): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(564): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(532): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(571): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(226): warning C4715: 'createListCmdData': not all control paths return a value
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(650): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(652): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(653): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(657): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(661): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+d:\git\ftpfileserver\sources\ftpfileserver\ftpfileserver\main.cpp(240): warning C4715: 'createListCmdData': not all control paths return a value
   FTPFileServer.vcxproj -> D:\Git\FTPFileServer\sources\FTPFileServer\Debug\FTPFileServer.exe
