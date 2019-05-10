@@ -3,7 +3,6 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
-#include <regex>
 #include <string>
 
 #define NAME_LENGTH 50
@@ -57,7 +56,7 @@ void showUsersInfo() {
 		cout << "p_path: " << users.at(i)->h_path << endl;
 		cout << "fperm: " << users.at(i)->fperm << endl;
 		cout << "dperm: " << users.at(i)->dperm << endl;
- 	}
+	}
 }
 
 void strtrim(char * str) { // loại bỏ khoảng trống ở đầu và cuối chuỗi
@@ -80,7 +79,7 @@ void preprocessPathname(char * path) {
 	int i = 1;
 	tmp[0] = path[0];
 	// loại bỏ các / gần nhau
-	for (int j = 1; j < strlen(path); j++) { 
+	for (int j = 1; j < strlen(path); j++) {
 		if (path[j] == '/' && tmp[i - 1] == '/') continue;
 		tmp[i++] = path[j];
 	}
@@ -142,9 +141,12 @@ int sizeOfFile(const char * fullpath) {
 	else return 0; // tìm được nhiều hơn 1 file/thư mục
 }
 
-bool createListCmdData(const char * fullpath,User * user, char * data) { // tao data cho lenh list
+
+bool createListCmdData(const char * fullpath, User * user, char * data) { // tao data cho lenh list
+
 	int type = findFile(fullpath);
 	if (type == 0) return false; // không tìm thấy file / thư mục
+
 	else if (type == 1) { // là thư mục
 		char tmp[2 * PATH_LENGTH_MAX] = "";
 		sprintf(tmp, "%s/*.*", fullpath); // timf kiem tat ca file+thu muc trong thu muc
@@ -154,6 +156,7 @@ bool createListCmdData(const char * fullpath,User * user, char * data) { // tao 
 		//if (hFind == INVALID_HANDLE_VALUE) return true; // khong tim duoc file dau tien, data rỗng, nếu là thư mục chắc chắn tìm được hai thư mục . và ..
 		char metadata[100] = "";
 		sprintf(metadata, " %d %s %s ", 1, user->username, user->username);
+		char month[12][4] = { "Jan","Feb","Mar","Apr","May","Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 		do {
 			if (FDATA.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 				// la thu muc khác .. và .
@@ -168,8 +171,8 @@ bool createListCmdData(const char * fullpath,User * user, char * data) { // tao 
 					strcat_s(permission, "r-xr-x");
 					char line[1024] = "";
 					SYSTEMTIME stLocal;
-					FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
-					sprintf(line, "%s%s%d %02d %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+					FileTimeToSystemTime(&FDATA.ftLastAccessTime, &stLocal);
+					sprintf(line, "%s%s%10d %s %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, month[stLocal.wMonth], stLocal.wDay, stLocal.wYear, FDATA.cFileName);
 					strcat(data, line);
 				}
 			}
@@ -185,8 +188,8 @@ bool createListCmdData(const char * fullpath,User * user, char * data) { // tao 
 				strcat_s(permission, "r--r--");
 				char line[1024] = "";
 				SYSTEMTIME stLocal;
-				FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
-				sprintf(line, "%s%s%d %02d %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+				FileTimeToSystemTime(&FDATA.ftLastAccessTime, &stLocal);
+				sprintf(line, "%s%s%10d %s %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, month[stLocal.wMonth], stLocal.wDay, stLocal.wYear, FDATA.cFileName);
 				strcat(data, line);
 			}
 		} while (FindNextFileA(hFind, &FDATA) != 0);
@@ -198,7 +201,8 @@ bool createListCmdData(const char * fullpath,User * user, char * data) { // tao 
 		hFind = FindFirstFileA(fullpath, &FDATA);
 		//if (hFind == INVALID_HANDLE_VALUE) return false; // khong tim duoc file
 		char metadata[100] = "";
-		sprintf(metadata, " %d %s %s ", 1, user->username, user->username);
+		sprintf(metadata, " %5d %s %s ", 1, user->username, user->username);
+		char month[12][4] = { "Jan","Feb","Mar","Apr","May","Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 		do {
 			if (FDATA.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 				// la thu muc khác .. và .
@@ -213,8 +217,8 @@ bool createListCmdData(const char * fullpath,User * user, char * data) { // tao 
 					strcat_s(permission, "r-xr-x");
 					char line[1024] = "";
 					SYSTEMTIME stLocal;
-					FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
-					sprintf(line, "%s%s%d %02d %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+					FileTimeToSystemTime(&FDATA.ftLastAccessTime, &stLocal);
+					sprintf(line, "%s%s%10d %s %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, month[stLocal.wMonth], stLocal.wDay, stLocal.wYear, FDATA.cFileName);
 					strcat(data, line);
 				}
 			}
@@ -230,13 +234,14 @@ bool createListCmdData(const char * fullpath,User * user, char * data) { // tao 
 				strcat_s(permission, "r--r--");
 				char line[1024] = "";
 				SYSTEMTIME stLocal;
-				FileTimeToSystemTime(&FDATA.ftCreationTime, &stLocal);
-				sprintf(line, "%s%s%d %02d %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, stLocal.wDay, stLocal.wMonth, stLocal.wYear, FDATA.cFileName);
+				FileTimeToSystemTime(&FDATA.ftLastAccessTime, &stLocal);
+				sprintf(line, "%s%s%10d %s %02d %04d %s\r\n", permission, metadata, FDATA.nFileSizeHigh * (MAXDWORD + 1) + FDATA.nFileSizeLow, month[stLocal.wMonth], stLocal.wDay, stLocal.wYear, FDATA.cFileName);
 				strcat(data, line);
 			}
 		} while (FindNextFileA(hFind, &FDATA) != 0);
 		return true;
 	}
+
 }
 
 
@@ -250,14 +255,14 @@ DWORD WINAPI clientThread(LPVOID p) {
 	//cout << (int)caddr.sin_addr.S_un.S_un_b.s_b1 << "." << (int)caddr.sin_addr.S_un.S_un_b.s_b2 << "." << (int)caddr.sin_addr.S_un.S_un_b.s_b3 << "." << (int)caddr.sin_addr.S_un.S_un_b.s_b4 << endl;
 
 	User * user;	// tro den cau truc user cua client nay
-	
+
 	char username[NAME_LENGTH] = "";
 	char password[NAME_LENGTH] = "";
 
 	// gửi message
 	char message[] = "220 Chao may.\r\n";
 	send(c, message, strlen(message), 0);
-	
+
 	int trans_mode = 0; // 0: chưa set, 1: active mode, 2: passive mode
 	int data_type = 0; // 0: ascii (default), 1: binary
 
@@ -273,8 +278,10 @@ DWORD WINAPI clientThread(LPVOID p) {
 		// nhan cau lenh tu client
 		char rbuf[1024];
 		memset(rbuf, 0, 1024);
-		if(recv(c, rbuf, 1023, 0) <= 0) break; // client ngắt kết nối
-		
+
+		if (recv(c, rbuf, 1023, 0) <= 0) break; // client ngắt kết nối
+
+
 		char cmd[5] = "";
 		char args[1024] = "";
 		if (!splitRequestCommand(rbuf, cmd, args)) {
@@ -311,7 +318,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 				char sbuf[] = "501 Password too long.\r\n";
 				send(c, sbuf, strlen(sbuf), 0);
 			}
-			else if(!login){ // neu chua login thi kiem tra tai khoan mat khau 
+			else if (!login) { // neu chua login thi kiem tra tai khoan mat khau 
 				if (strlen(args) == 0) {
 					//bo trong pass thi tim xem co phai la anonymous khong
 					for (int i = 0; i < users.size(); i++) {
@@ -360,11 +367,15 @@ DWORD WINAPI clientThread(LPVOID p) {
 			}
 			else {
 				closesocket(sdata);
-				sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);	
+				sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 				while (true) {
 					// lưu cấu trúc địa chỉ
 					addr_data.sin_addr.s_addr = 0;
-					srand(time(NULL));
+
+				
+
+					//srand(time(NULL));
+
 					addr_data.sin_port = htons(rand() % (65535 - 50000 + 1) + 50000);	// sinh port ngẫu nhiên trong khoảng từ 1024 -> 65535
 					if (!bind(sdata, (sockaddr*)&addr_data, sizeof(addr_data))) {
 						listen(sdata, 1);
@@ -476,8 +487,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 				if (strcmp(cwd, "/") != 0) { // quay lai thư mục cha khi không ở thư mục gốc
 					cwd[strlen(cwd) - 1] = '\0';
 					char * last = strrchr(cwd, '/');
-					if (last - cwd == 0) strcpy(cwd, "/");
-					else cwd[last - cwd + 1] = '\0';
+					cwd[last - cwd + 1] = '\0';
 				}
 				char sbuf[1024] = "";
 				sprintf(sbuf, "250 \"%s\" is current directory.\r\n", cwd);
@@ -526,7 +536,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 			send(c, sbuf, strlen(sbuf), 0);
 		}
 		else if (strcmp(cmd, "LIST") == 0) { // xử lý lệnh LIST<sp><path><\n>
-			if(!login){
+			if (!login) {
 				// yêu cầu login 
 				char sbuf[] = "530 Please login with USER and PASS!\r\n";
 				send(c, sbuf, strlen(sbuf), 0);
@@ -538,19 +548,20 @@ DWORD WINAPI clientThread(LPVOID p) {
 			else if (trans_mode == 0) {
 				char sbuf[] = "425 Use PASV or PORT command first.\r\n";
 				send(c, sbuf, strlen(sbuf), 0);
-			} 
-			else{
-				if (strcmp(args, "-l") == 0) strcpy(args, ""); // 
-				
-				
-				char path[2*PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
+
+			}
+			else {
+
+
+				char path[2 * PATH_LENGTH_MAX] = "";
+				if (strlen(args) == 0 || strcmp(args, "-l") == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
+
 				else {
 					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
 					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
 				}
 				// chưa xử lý kí tự đặc biệt như: cd .., cd ., cd ~ giống trong linux
-				
+
 				preprocessPathname(path);
 				// ghép thành đường dẫn vật lý
 				char fullpath[2 * PATH_LENGTH_MAX] = "";
@@ -599,7 +610,6 @@ DWORD WINAPI clientThread(LPVOID p) {
 						int clen_t = sizeof(caddr_t);
 						SOCKET sd = accept(sdata, (sockaddr*)&caddr_t, &clen_t);
 						// chưa set timeout cho hàm accept tránh trường hợp chờ vô hạn
-						// sử dụng select để set timeout.
 						send(sd, data, strlen(data), 0);
 						closesocket(sd);
 						char sbuf[1024] = "226 Successful transfering ";
@@ -616,9 +626,125 @@ DWORD WINAPI clientThread(LPVOID p) {
 					char sbuf[] = "550 File or Directory not found.\r\n";
 					send(c, sbuf, strlen(sbuf), 0);
 				}
-				
+
 			}
 		}
+
+		else if (strcmp(cmd, "RETR") == 0) { // tải dữ liệu từ server
+			if (!login) {
+				// yêu cầu login 
+				char sbuf[] = "530 Please login with USER and PASS!\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (strlen(args) == 0) {
+				char sbuf[] = "550 File not found.\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (strlen(args) > PATH_LENGTH_MAX) {
+				char sbuf[] = "501 Pathname too long.\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (trans_mode == 0) {
+				char sbuf[] = "425 Use PASV or PORT command first.\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else {
+				char path[2 * PATH_LENGTH_MAX] = "";
+				if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
+				else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
+				preprocessPathname(path);
+				// ghép thành đường dẫn vật lý
+				char fullpath[2 * PATH_LENGTH_MAX] = "";
+				sprintf(fullpath, "%s%s", user->h_path, path);
+				if (findFile(fullpath) == 2) { //tìm thấy file
+					bool canOpenFile = true;
+					char * data; // biến lưu dữ liệu
+					int sizeOfDataSend = 0;
+					if (data_type == 0) {// đọc lấy dữ liệu kiểu ascii
+						FILE * f = fopen(fullpath, "r");
+						if (f != NULL) {
+							data = (char *)malloc(1);
+							data[0] = '\0';
+							while (!feof(f)) {
+								char line[1024] = "";
+								fgets(line, sizeof(line) - 1, f);
+								data = (char *)realloc(data, sizeof(data) + strlen(line));
+								strcat(data, line);
+							}
+							sizeOfDataSend = strlen(data);
+							fclose(f);
+						}
+						else canOpenFile = false; 
+					}
+					else if (data_type == 1) {
+						FILE * f = fopen(fullpath, "rb");
+						if (f != NULL) {
+							fseek(f, 0, SEEK_END);
+							long filesize = ftell(f);
+							data = (char*)calloc(filesize, 1);
+							fseek(f, 0, SEEK_SET);
+							fread(data, 1, filesize, f);
+							sizeOfDataSend = filesize;
+							fclose(f);
+						}
+						else canOpenFile = false;
+					}
+					if (canOpenFile) { // mở được file thì gửi dữ liệu
+						char sbuf[1024] = "150 Opening data channel for directory listing of ";
+						strcat_s(sbuf, args);
+						strcat_s(sbuf, "\r\n");
+						send(c, sbuf, strlen(sbuf), 0);
+						if (trans_mode == 1) {
+							// active mode
+							// đặt cổng kết nối của server là cổng 20, bằng hàm bind
+							sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+							SOCKADDR_IN sdata_addr;
+							sdata_addr.sin_family = AF_INET;
+							sdata_addr.sin_addr.s_addr = 0;
+							sdata_addr.sin_port = htons(20);
+							bind(sdata, (sockaddr*)&sdata_addr, sizeof(sdata_addr)); // có thể bind lỗi tại đây
+
+							int code = connect(sdata, (sockaddr*)&addr_data, sizeof(addr_data));
+							if (code != 0) {
+								char sbuf[] = "425 Can't open data connection.\r\n";
+								send(c, sbuf, strlen(sbuf), 0);
+							}
+							else {
+								// gửi dữ liệu đi 
+								// gửi code báo thành công
+								send(sdata, data, sizeOfDataSend, 0);
+								closesocket(sdata); // đóng kết nối
+								char sbuf[] = "226 Successful transfering.\r\n";
+								send(c, sbuf, strlen(sbuf), 0);
+							}
+						}
+						else if (trans_mode == 2) {
+							// passive mode
+							// listen(sdata, 1);
+							SOCKADDR_IN caddr_t;
+							int clen_t = sizeof(caddr_t);
+							SOCKET sd = accept(sdata, (sockaddr*)&caddr_t, &clen_t);
+							// chưa set timeout cho hàm accept tránh trường hợp chờ vô hạn, quá time out gửi lỗi
+							send(sd, data, sizeOfDataSend, 0);
+							closesocket(sd);
+							char sbuf[1024] = "226 Successful transfering.\r\n";
+							send(c, sbuf, strlen(sbuf), 0);
+						}
+						trans_mode = 0;
+						free(data); // giải phóng bộ nhớ
+					}
+					else {
+						char sbuf[] = "550 Cannot open file.\r\n";
+						send(c, sbuf, strlen(sbuf), 0);
+					}
+				}
+				else {
+					char sbuf[] = "550 File not found.\r\n";
+					send(c, sbuf, strlen(sbuf), 0);
+				}
+			}
+		}
+
 		else if (strcmp(cmd, "SYST") == 0) { // thông tin về hệ thống
 			char sbuf[] = "215 UNIX\r\n";
 			send(c, sbuf, strlen(sbuf), 0);
@@ -658,7 +784,9 @@ DWORD WINAPI clientThread(LPVOID p) {
 			}
 			else if (strcmp(args, "E") == 0 || strcmp(args, "L") == 0) {
 				// không hỗ trợ 2 kiểu này
-				char sbuf[] = "421 Does not support this data type.\r\n";
+
+				char sbuf[] = "421 Server does not support this data type.\r\n";
+
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
@@ -671,7 +799,9 @@ DWORD WINAPI clientThread(LPVOID p) {
 			char sbuf[] = "221 Goodbye.\r\n";
 			send(c, sbuf, strlen(sbuf), 0);
 			break;
-		} 
+
+		}
+
 		else {	// lenh khong duoc xu ly -> loi cu phap
 			char sbuf[] = "500 Systax error, command unrecognized.\r\n";
 			send(c, sbuf, strlen(sbuf), 0);
@@ -693,13 +823,13 @@ int main() {
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(21);
 	saddr.sin_addr.s_addr = 0;
-	
+
 	if (bind(s, (sockaddr*)&saddr, sizeof(saddr)) != 0) {
 		cout << "Loi khi bind socket" << endl;
 		system("pause");
 		return 1;
 	}
-	
+
 	if (listen(s, 10) != 0) {
 		cout << "Loi khi listen" << endl;
 		system("pause");
