@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿// author: Nguyễn Huy Định + Lã Hồng Anh + Nguyễn Hải Sơn
+#include <iostream>
 #include <WinSock2.h>
 #include <vector>
 #include <fstream>
@@ -278,10 +279,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 		// nhan cau lenh tu client
 		char rbuf[1024];
 		memset(rbuf, 0, 1024);
-
 		if (recv(c, rbuf, 1023, 0) <= 0) break; // client ngắt kết nối
-
-
 		char cmd[5] = "";
 		char args[1024] = "";
 		if (!splitRequestCommand(rbuf, cmd, args)) {
@@ -372,7 +370,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 					// lưu cấu trúc địa chỉ
 					addr_data.sin_addr.s_addr = 0;
 
-				
+
 
 					//srand(time(NULL));
 
@@ -629,7 +627,6 @@ DWORD WINAPI clientThread(LPVOID p) {
 
 			}
 		}
-
 		else if (strcmp(cmd, "RETR") == 0) { // tải dữ liệu từ server
 			if (!login) {
 				// yêu cầu login 
@@ -674,7 +671,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 							sizeOfDataSend = strlen(data);
 							fclose(f);
 						}
-						else canOpenFile = false; 
+						else canOpenFile = false;
 					}
 					else if (data_type == 1) {
 						FILE * f = fopen(fullpath, "rb");
@@ -690,6 +687,8 @@ DWORD WINAPI clientThread(LPVOID p) {
 						else canOpenFile = false;
 					}
 					if (canOpenFile) { // mở được file thì gửi dữ liệu
+						cout << sizeOfDataSend << endl;
+						cout << data << endl;
 						char sbuf[1024] = "150 Opening data channel for directory listing of ";
 						strcat_s(sbuf, args);
 						strcat_s(sbuf, "\r\n");
@@ -744,7 +743,101 @@ DWORD WINAPI clientThread(LPVOID p) {
 				}
 			}
 		}
+		else if (strcmp(cmd, "STOR") == 0) {
+			if (!login) {
+				// yêu cầu login 
+				char sbuf[] = "530 Please login with USER and PASS!\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (strlen(args) > PATH_LENGTH_MAX) {
+				char sbuf[] = "501 Pathname too long.\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
+			}
+			else if (trans_mode == 0) {
+				char sbuf[] = "425 Use PASV or PORT command first.\r\n";
+				send(c, sbuf, strlen(sbuf), 0);
 
+			}
+			else {
+				char path[2 * PATH_LENGTH_MAX] = "";
+				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
+				else {
+					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
+					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
+				}
+				preprocessPathname(path);
+				// ghép thành đường dẫn vật lý
+				char fullpath[2 * PATH_LENGTH_MAX] = "";
+				sprintf(fullpath, "%s%s", user->h_path, path);
+				// lấy tên file và đường dẫn tới thư mục chứa file.
+				char dpath[2 * PATH_LENGTH_MAX] = "";
+				char filename[PATH_LENGTH_MAX] = "";
+				strcpy(dpath, fullpath);
+				char * last = strrchr(dpath, '/');
+				strcpy(filename, last + 1);
+				*last = '\0';
+				if (findFile(dpath) == 1 && findFile(fullpath) == 0) { // tìm thấy thư mục nhưng không tìm thấy file (file chưa tồn tại)
+					FILE * f = fopen(fullpath, "wb");
+					if (f != NULL) {
+						char sbuf[1024] = "";
+						sprintf(sbuf, "150 Opening data channel for file upload to server of \"%s\"\r\n", args);
+						send(c, sbuf, strlen(sbuf), 0);
+						if (trans_mode == 1) { // active mode
+							sdata = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+							SOCKADDR_IN sdata_addr;
+							sdata_addr.sin_family = AF_INET;
+							sdata_addr.sin_addr.s_addr = 0;
+							sdata_addr.sin_port = htons(20);
+							bind(sdata, (sockaddr*)&sdata_addr, sizeof(sdata_addr)); // có thể bind lỗi tại đây
+							int code = connect(sdata, (sockaddr*)&addr_data, sizeof(addr_data));
+							if (code != 0) {
+								char sbuf[] = "425 Can't open data connection.\r\n";
+								send(c, sbuf, strlen(sbuf), 0);
+							}
+							else {
+								// nhận dữ liệu và ghi vào file
+								do {
+									char dbuf[1024];
+									memset(dbuf, 0, sizeof(dbuf));
+									int size = recv(sdata, dbuf, sizeof(dbuf) - 1, 0);
+									if (size > 0) fwrite(dbuf, 1, size, f); // ghi dạng binary
+									else break; // dừng lại khi không nhận được byte nào (phía client đóng kết nối).
+								} while (true); 
+								closesocket(sdata); // đóng kết nối
+								char sbuf[] = "226 Successful transfering.\r\n";
+								send(c, sbuf, strlen(sbuf), 0);
+							}
+						}
+						else if (trans_mode == 2) { // passive mode
+							SOCKADDR_IN caddr_t;
+							int clen_t = sizeof(caddr_t);
+							SOCKET sd = accept(sdata, (sockaddr*)&caddr_t, &clen_t);
+							// chưa set timeout cho hàm accept tránh trường hợp chờ vô hạn
+							do {
+								char dbuf[1024];
+								memset(dbuf, 0, sizeof(dbuf));
+								int size = recv(sd, dbuf, sizeof(dbuf) - 1, 0);
+								if (size > 0) fwrite(dbuf, 1, size, f); // ghi dạng binary								
+								else break; // dừng lại khi không nhận được byte nào (phía client đóng kết nối).
+							} while (true);
+							closesocket(sd);
+							char sbuf[] = "226 Successful transfering.\r\n";
+							send(c, sbuf, strlen(sbuf), 0);
+						}
+						trans_mode = 0;
+						fclose(f);
+					}
+					else { // không mở được file để ghi
+						char sbuf[] = "550 Cannot create file.\r\n";
+						send(c, sbuf, strlen(sbuf), 0);
+					}
+				}
+				else {
+					char sbuf[] = "550 Filename invalid.\r\n";
+					send(c, sbuf, strlen(sbuf), 0);
+				}
+			}
+		}
 		else if (strcmp(cmd, "SYST") == 0) { // thông tin về hệ thống
 			char sbuf[] = "215 UNIX\r\n";
 			send(c, sbuf, strlen(sbuf), 0);
@@ -768,7 +861,6 @@ DWORD WINAPI clientThread(LPVOID p) {
 			else {
 				char sbuf[] = "550 File not found.\r\n";
 				send(c, sbuf, strlen(sbuf), 0);
-
 			}
 		}
 		else if (strcmp(cmd, "TYPE") == 0) { // kiểu dữ liệu biểu diễn
