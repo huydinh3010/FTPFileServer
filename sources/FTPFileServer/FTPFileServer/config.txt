@@ -1,2 +1,5 @@
-anonymous null D:/FTP Server Demo	7 7
-huydinh 30101998 D:/FTP Server Demo	7 7
+anonymous null D:/FTP Server Demo	4 5
+huydinh 20161042 D:/FTP Server Demo	6 7
+honganh 20160084 D:/FTP Server Demo	4 7
+haison 20163535 D:/FTP Server Demo	4 7
+admin admin D:/FTP Server Demo	7 7
