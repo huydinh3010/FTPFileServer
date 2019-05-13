@@ -7,7 +7,7 @@
 #include <string>
 
 #define NAME_LENGTH 50
-#define PATH_LENGTH_MAX 500
+#define PATH_LENGTH_MAX 1024
 #define IP_SERVER "127.0.0.1"
 #define ASCII_DATA_TYPE 1
 #define BINARY_DATA_TYPE 2	
@@ -70,20 +70,6 @@ void strtrim(char * str) { // loại bỏ khoảng trống ở đầu và cuối
 	strcpy(str, str + i);
 }
 
-void preprocessPathname(char * path) { // tiền xử lý path
-	if (strlen(path) == 0) return;
-	while (path[strlen(path) - 1] == ' ' || path[strlen(path) - 1] == '/') path[strlen(path) - 1] = '\0'; // loại bỏ dấu / và sp ở cuối chuỗi
-	char tmp[1024] = "";
-	int i = 1;
-	tmp[0] = path[0];
-	for (int j = 1; j < strlen(path); j++) { // loại bỏ các / gần nhau
-		if (path[j] == '/' && tmp[i - 1] == '/') continue;
-		tmp[i++] = path[j];
-	}
-	tmp[i] = '\0';
-	strcpy(path, tmp);
-}
-
 bool splitRequestCommand(const char * requestCmd, char * cmd, char * args) { // tách yêu cầu thành mã và tham số
 	char tmp[1024] = "";
 	strcpy(tmp, requestCmd);
@@ -108,6 +94,43 @@ bool splitRequestCommand(const char * requestCmd, char * cmd, char * args) { // 
 		strupr(cmd);
 		return true;
 	}
+}
+
+void processPathname(const char * cwd, const char * home, char * args, char * v_path, char * p_path) {
+	// xu ly args de lay ra duong dan.
+	if (strlen(args) == 0 || strcmp(args, "-l") == 0) strcpy(v_path, cwd); // path bỏ trống, lấy path trong cwd
+	else if (args[0] == '/') strcpy(v_path, args);// đường dẫn tuyệt đối
+	else sprintf(v_path, "%s%s", cwd, args); // đường dẫn tương đối dạng folder1/
+	// tien xu ly v_path.
+	if (strlen(v_path) != 0) {
+		while (v_path[strlen(v_path) - 1] == ' ' || v_path[strlen(v_path) - 1] == '/') v_path[strlen(v_path) - 1] = '\0'; // loại bỏ dấu / và sp ở cuối chuỗi
+		char tmp[1024] = "";
+		int i = 1;
+		tmp[0] = v_path[0];
+		for (int j = 1; j < strlen(v_path); j++) { // loại bỏ các / gần nhau
+			if (v_path[j] == '/' && tmp[i - 1] == '/') continue;
+			tmp[i++] = v_path[j];
+		}
+		tmp[i] = '\0';
+		strcpy(v_path, tmp);
+	}
+	char * sstr;
+	strcat(v_path, "/");
+	while ((sstr = strstr(v_path, "/./")) != NULL) { // loại bỏ các chuỗi dạng /./ trong v_path
+		sstr[1] = '\0';
+		strcat(v_path, sstr + 3);
+	}
+	while ((sstr = strstr(v_path, "/../")) != NULL) { // xử lý các chuỗi dạng /../ trong v_path
+		if (sstr == v_path) strcpy(v_path, v_path + 3);
+		else {
+			sstr[0] = '\0';
+			char * last = strrchr(v_path, '/');
+			last[1] = '\0';
+			strcat(v_path, sstr + 4);
+		}
+	}
+	v_path[strlen(v_path) - 1] = '\0';
+	sprintf(p_path, "%s%s", home, v_path);
 }
 
 int findFile(const char * fullpath) { // trả về 0 nếu không tìm thấy, trả về 1 nếu là thư mục, trả về 2 nếu là file, trả về 3 nếu tìm thấy nhiều kết quả	
@@ -340,7 +363,6 @@ DWORD WINAPI clientThread(LPVOID p) {
 	char fileReadyForRename[PATH_LENGTH_MAX] = "";
 	fd_set fdread;
 	while (true) {
-		
 		FD_ZERO(&fdread);
 		FD_SET(c, &fdread);
 		timeval timeout;
@@ -579,34 +601,13 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
-			else if (strcmp(args, ".") == 0) { // thư mục hiện tại
-				char sbuf[1024] = "";
-				sprintf(sbuf, "250 \"%s\" is current directory.\r\n", cwd);
-				cout << "Send to " << c << ": " << sbuf << endl;
-				send(c, sbuf, strlen(sbuf), 0);
-			}
-			else if (strcmp(args, "..") == 0) { // thư mục cha
-				if (strcmp(cwd, "/") != 0) { // quay lai thư mục cha khi không ở thư mục gốc
-					cwd[strlen(cwd) - 1] = '\0';
-					char * last = strrchr(cwd, '/');
-					cwd[last - cwd + 1] = '\0';
-				}
-				char sbuf[1024] = "";
-				sprintf(sbuf, "250 \"%s\" is current directory.\r\n", cwd);
-				cout << "Send to " << c << ": " << sbuf << endl;
-				send(c, sbuf, strlen(sbuf), 0);
-			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (args[0] == '/') strcpy(path, args); // đường dẫn tuyệt đối
-				else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				preprocessPathname(path);
-				// chuyển thành path vật lý
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				if (findFile(fullpath) == 1) { // tìm xem có chứa thư mục này hay không
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				if (findFile(p_path) == 1) { // tìm xem có chứa thư mục này hay không
 					// là thư mục, gửi lệnh ok
-					sprintf(cwd, "%s/", path);
+					sprintf(cwd, "%s/", v_path);
 					char sbuf[1024] = "";
 					sprintf(sbuf, "250 successful. \"%s\" is current directory.\r\n", cwd);
 					cout << "Send to " << c << ": " << sbuf << endl;
@@ -614,7 +615,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 				}
 				else {
 					char sbuf[1024] = "";
-					sprintf(sbuf, "550 CWD failed. \"%s\": directory not found.\r\n", path);
+					sprintf(sbuf, "550 CWD failed. \"%s\": directory not found.\r\n", args);
 					cout << "Send to " << c << ": " << sbuf << endl;
 					send(c, sbuf, strlen(sbuf), 0);
 				}
@@ -660,19 +661,12 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0 || strcmp(args, "-l") == 0 || strcmp(args, ".") == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				// ghép thành đường dẫn vật lý
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
 				char * data = (char *)malloc(1);
 				*data = '\0';
-				if (construcListCmdData(fullpath, user, &data)) {
+				if (construcListCmdData(p_path, user, &data)) {
 					// mở kết nối mới và gửi dữ liệu đi
 					// gửi mã 150
 					char sbuf[1024] = "";
@@ -723,19 +717,12 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				// ghép thành đường dẫn vật lý
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
 				char * data = (char *)malloc(1);
 				*data = '\0';
-				if (construcNameListCmdData(fullpath, user, &data)) {
+				if (construcNameListCmdData(p_path, user, &data)) {
 					char sbuf[1024] = "";
 					sprintf(sbuf, "150 Opening data channel for directory listing of %s\r\n", args);
 					cout << "Send to " << c << ": " << sbuf << endl;
@@ -773,6 +760,11 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
+			else if (strlen(args) == 0) { // không được bỏ trống tên file
+				char sbuf[] = "501 Syntax error\r\n";
+				cout << "Send to " << c << ": " << sbuf << endl;
+				send(c, sbuf, strlen(sbuf), 0);
+			}
 			else if (!(user->fperm & 4)) { // phải có quyền read với file
 				char sbuf[] = "550 Permission denied\r\n";
 				cout << "Send to " << c << ": " << sbuf << endl;
@@ -784,17 +776,13 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-				else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				preprocessPathname(path);
-				// ghép thành đường dẫn vật lý
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				if (findFile(fullpath) == 2) { //tìm thấy file
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				if (findFile(p_path) == 2) { //tìm thấy file
 					bool canOpenFile = true;
 					int sizeOfDataSend = 0;
-					FILE * f = fopen(fullpath, "rb");
+					FILE * f = fopen(p_path, "rb");
 					if (f != NULL) {
 						fseek(f, 0, SEEK_END);
 						long filesize = ftell(f);
@@ -843,6 +831,11 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
+			else if (strlen(args) == 0) { // không được bỏ trống tên file
+				char sbuf[] = "501 Syntax error\r\n";
+				cout << "Send to " << c << ": " << sbuf << endl;
+				send(c, sbuf, strlen(sbuf), 0);
+			}
 			else if (!(user->fperm & 2) || !(user->dperm & 2)) { // phải có quyền write với file và thư mục
 				char sbuf[] = "550 Permission denied\r\n";
 				cout << "Send to " << c << ": " << sbuf << endl;
@@ -854,25 +847,18 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				// ghép thành đường dẫn vật lý
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
 				// lấy tên file và đường dẫn tới thư mục chứa file.
 				char dpath[2 * PATH_LENGTH_MAX] = "";
 				char filename[PATH_LENGTH_MAX] = "";
-				strcpy(dpath, fullpath);
+				strcpy(dpath, p_path);
 				char * last = strrchr(dpath, '/');
 				strcpy(filename, last + 1);
 				*last = '\0';
-				if (findFile(dpath) == 1 && findFile(fullpath) == 0) { // tìm thấy thư mục nhưng không tìm thấy file (file chưa tồn tại)
-					FILE * f = fopen(fullpath, "wb");
+				if (findFile(dpath) == 1 && findFile(p_path) == 0) { // tìm thấy thư mục nhưng không tìm thấy file (file chưa tồn tại)
+					FILE * f = fopen(p_path, "wb");
 					if (f != NULL) {
 						char sbuf[1024] = "";
 						sprintf(sbuf, "150 Opening data channel for file upload to server of \"%s\"\r\n", args);
@@ -932,24 +918,23 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
+			else if (strlen(args) == 0) { // không được bỏ trống tên thư mục
+				char sbuf[] = "501 Syntax error\r\n";
+				cout << "Send to " << c << ": " << sbuf << endl;
+				send(c, sbuf, strlen(sbuf), 0);
+			}
 			else if (!(user->fperm & 1) || !(user->dperm & 2)) { // phải có quyền thực thi file và quyền ghi thư mục
 				char sbuf[] = "550 Permission denied\r\n";
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				int type = findFile(fullpath);
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				int type = findFile(p_path);
 				if (type == 1 || type == 2) {
-					strcpy(fileReadyForRename, fullpath);
+					strcpy(fileReadyForRename, p_path);
 					char sbuf[] = "350 File or directory exists, ready for destination name.\r\n";
 					cout << "Send to " << c << ": " << sbuf << endl;
 					send(c, sbuf, strlen(sbuf), 0);
@@ -967,6 +952,11 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
+			else if (strlen(args) == 0) { // không được bỏ trống tên thư mục
+				char sbuf[] = "501 Syntax error\r\n";
+				cout << "Send to " << c << ": " << sbuf << endl;
+				send(c, sbuf, strlen(sbuf), 0);
+			}
 			else if (strlen(fileReadyForRename) == 0) { // phải gửi lệnh RNFR trước
 				char sbuf[] = "503 Bad sequence command\r\n";
 				cout << "Send to " << c << ": " << sbuf << endl;
@@ -976,7 +966,7 @@ DWORD WINAPI clientThread(LPVOID p) {
 				char tmp[PATH_LENGTH_MAX] = "";
 				strcpy(tmp, fileReadyForRename);
 				char * last = strrchr(tmp, '/');
-				*(last + 1) = '\0';
+				*(last + 1) = '\0'; 
 				strcat(tmp, args);
 				if (rename(fileReadyForRename, tmp) == 0) { // hàm rename có sẵn trong c
 					char sbuf[] = "250 file renamed successfully\r\n";
@@ -999,22 +989,21 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
+			else if (strlen(args) == 0) { // không được bỏ trống tên
+				char sbuf[] = "501 Syntax error\r\n";
+				cout << "Send to " << c << ": " << sbuf << endl;
+				send(c, sbuf, strlen(sbuf), 0);
+			}
 			else if (!(user->fperm & 1) || !(user->dperm & 2)) { // phải có quyền thực thi file và quyền ghi thư mục
 				char sbuf[] = "550 Permission denied\r\n";
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				if (remove(fullpath) == 0) { // hàm remove có sẵn
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				if (remove(p_path) == 0) { // hàm remove có sẵn
 					char sbuf[] = "250 Deleted successfully\r\n";
 					cout << "Send to " << c << ": " << sbuf << endl;
 					send(c, sbuf, strlen(sbuf), 0);
@@ -1034,22 +1023,21 @@ DWORD WINAPI clientThread(LPVOID p) {
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
+			else if (strlen(args) == 0) { // không được bỏ trống tên thư mục
+				char sbuf[] = "501 Syntax error\r\n";
+				cout << "Send to " << c << ": " << sbuf << endl;
+				send(c, sbuf, strlen(sbuf), 0);
+			}
 			else if (!(user->dperm & 2)) { // phải có quyền ghi thư mục
 				char sbuf[] = "550 Permission denied\r\n";
 				cout << "Send to " << c << ": " << sbuf << endl;
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				if (CreateDirectory(fullpath, NULL)) {
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				if (CreateDirectory(p_path, NULL)) {
 					char sbuf[] = "257 Created directory successfully\r\n";
 					cout << "Send to " << c << ": " << sbuf << endl;
 					send(c, sbuf, strlen(sbuf), 0);
@@ -1074,16 +1062,10 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				if (RemoveDirectory(fullpath)) {
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				if (RemoveDirectory(p_path)) {
 					char sbuf[] = "250 Removed directory successfully\r\n";
 					cout << "Send to " << c << ": " << sbuf << endl;
 					send(c, sbuf, strlen(sbuf), 0);
@@ -1108,16 +1090,10 @@ DWORD WINAPI clientThread(LPVOID p) {
 				send(c, sbuf, strlen(sbuf), 0);
 			}
 			else {
-				char path[2 * PATH_LENGTH_MAX] = "";
-				if (strlen(args) == 0) strcpy(path, cwd); // path bỏ trống, lấy path trong cwd
-				else {
-					if (args[0] == '/') strcpy(path, args);// đường dẫn tuyệt đối
-					else sprintf(path, "%s%s", cwd, args); // đường dẫn tương đối
-				}
-				preprocessPathname(path);
-				char fullpath[2 * PATH_LENGTH_MAX] = "";
-				sprintf(fullpath, "%s%s", user->h_path, path);
-				int size = sizeOfFile(fullpath);
+				char v_path[PATH_LENGTH_MAX] = "";
+				char p_path[PATH_LENGTH_MAX] = "";
+				processPathname(cwd, user->h_path, args, v_path, p_path);
+				int size = sizeOfFile(p_path);
 				if (size != 0) {
 					char sbuf[1024] = "";
 					sprintf(sbuf, "%d %d\r\n", 213, size);
@@ -1172,7 +1148,6 @@ DWORD WINAPI clientThread(LPVOID p) {
 			break;
 
 		}
-
 		else {	// lenh khong duoc xu ly -> loi cu phap
 			char sbuf[] = "500 Systax error, command unrecognized.\r\n";
 			cout << "Send to " << c << ": " << sbuf << endl;
